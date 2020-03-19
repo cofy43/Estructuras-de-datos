@@ -1,0 +1,12 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestGrafica.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestGrafica.java
+@@ -32,7 +32,8 @@ public class TestGrafica {
+      */
+     public TestGrafica() {
+         random = new Random();
+-        total = 2 + random.nextInt(100);
++        //total = 2 + random.nextInt(100);
++        total = 5;
+         grafica = new Grafica<Integer>();
+     }
+ 

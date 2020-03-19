@@ -1,0 +1,25 @@
+--- src/main/java/mx/unam/ciencias/edd/ArbolBinarioOrdenado.java
++++ src/main/java/mx/unam/ciencias/edd/ArbolBinarioOrdenado.java
+@@ -360,7 +360,16 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
+      * @param accion la acción a realizar en cada elemento del árbol.
+      */
+     public void dfsPostOrder(AccionVerticeArbolBinario<T> accion) {
+-        // Aquí va su código.
++        dfsPostOrder(accion, raiz);
++    }
++
++    private void dfsPostOrder(AccionVerticeArbolBinario<T> accion,
++    Vertice v) {
++        if (v == null)
++            return;
++        dfsPostOrder(accion, v.izquierdo);
++        dfsPostOrder(accion, v.derecho);
++        accion.actua(v);
+     }
+     private void post(Vertice v,AccionVerticeArbolBinario<T> accion){
+ 	if(v==null)
+@@ -377,3 +386,4 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
+         return new Iterador();
+     }
+ }
++

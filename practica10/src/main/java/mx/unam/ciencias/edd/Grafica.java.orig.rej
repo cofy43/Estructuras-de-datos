@@ -1,0 +1,358 @@
+--- src/main/java/mx/unam/ciencias/edd/Grafica.java.orig
++++ src/main/java/mx/unam/ciencias/edd/Grafica.java.orig
+@@ -18,17 +18,20 @@ public class Grafica<T> implements Coleccion<T> {
+         /* Construye un nuevo iterador, auxiliándose de la lista de vértices. */
+         public Iterador() {
+             // Aquí va su código.
++	    iterador = vertices.iteradorLista();
+         }
+ 
+         /* Nos dice si hay un siguiente elemento. */
+         @Override public boolean hasNext() {
+             // Aquí va su código.
++	    return iterador.hasNext();
+         }
+ 
+         /* Regresa el siguiente elemento. */
+-        @Override public T next() {
++	 @Override public T next() {
+             // Aquí va su código.
+-        }
++	     return iterador.next().elemento;
++	 }
+     }
+ 
+     /* Clase interna privada para vértices. */
+@@ -49,26 +52,36 @@ public class Grafica<T> implements Coleccion<T> {
+         /* Crea un nuevo vértice a partir de un elemento. */
+         public Vertice(T elemento) {
+             // Aquí va su código.
++	    this.elemento = elemento;
++	    this.color = Color.NINGUNO;
++	    vecinos = new Lista<Vertice>();
+         }
+ 
+         /* Regresa el elemento del vértice. */
+         @Override public T get() {
+             // Aquí va su código.
++	    return this.elemento;
+         }
+ 
+         /* Regresa el grado del vértice. */
+         @Override public int getGrado() {
+             // Aquí va su código.
++	    return vecinos.getLongitud();
+         }
+ 
+         /* Regresa el color del vértice. */
+         @Override public Color getColor() {
+             // Aquí va su código.
++	    if(this == null)
++		return Color.NINGUNO;
++	    return color;
+         }
+ 
+         /* Regresa un iterable para los vecinos. */
+         @Override public Iterable<? extends VerticeGrafica<T>> vecinos() {
+             // Aquí va su código.
++	    return vecinos;
++	    
+         }
+ 
+         /* Define el índice del vértice. */
+@@ -140,6 +153,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public Grafica() {
+         // Aquí va su código.
++	vertices = new Lista<Vertice>();
+     }
+ 
+     /**
+@@ -149,6 +163,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public int getElementos() {
+         // Aquí va su código.
++	return vertices.getLongitud();
+     }
+     
+         
+@@ -158,6 +173,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public int getAristas() {
+         // Aquí va su código.
++	return aristas;
+     }
+ 
+     /**
+@@ -168,6 +184,12 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public void agrega(T elemento) {
+         // Aquí va su código.
++	if (elemento == null)
++	    throw new IllegalArgumentException("el elemento es nulo");
++	if(contiene(elemento))
++	    throw new IllegalArgumentException("Ya esta el elemento");
++	Vertice ver = new Vertice(elemento);
++	vertices.agrega(ver);
+     }
+ 
+     /**
+@@ -181,6 +203,16 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void conecta(T a, T b) {
+         // Aquí va su código.
++	if(a.equals(b) || sonVecinos(a,b))
++	    throw  new IllegalArgumentException ("Los vertices son iguales o ya son vecinos");
++	if(!contiene(a) || !contiene(b))
++	    throw new NoSuchElementException ("No hay un elemento en la gráfica o ninguno");
++	Vertice uno = getVertice(a);
++	Vertice dos = getVertice(b);
++	uno.vecinos.agregaFinal(dos);
++	dos.vecinos.agregaFinal(uno);
++	aristas++;
++	
+     }
+ 
+     /**
+@@ -207,6 +239,15 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void desconecta(T a, T b) {
+         // Aquí va su código.
++	if(a.equals(b)||!sonVecinos(a,b))
++	    throw  new IllegalArgumentException ("Los vertices son iguales o ya son vecinos");
++	if(!contiene(a) || !contiene(b))
++            throw new NoSuchElementException ("No hay un elemento en la gráfica o ninguno");
++	Vertice uno = getVertice(a);
++	Vertice dos = getVertice(b);
++	uno.vecinos.elimina(dos);
++	dos.vecinos.elimina(uno);
++	aristas--;
+     }
+ 
+     /**
+@@ -216,8 +257,18 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public boolean contiene(T elemento) {
+         // Aquí va su código.
++	if(elemento == null)
++	    return false;
++	Vertice ver = getVertice(elemento);
++	return ver != null;
++    }
++    private Vertice getVertice(T elemento){
++	for(Vertice i : vertices){
++	    if(i.elemento.equals(elemento))
++		return i;
++	}
++	return null;
+     }
+-
+     /**
+      * Elimina un elemento de la gráfica. El elemento tiene que estar contenido
+      * en la gráfica.
+@@ -227,6 +278,13 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public void elimina(T elemento) {
+         // Aquí va su código.
++	if(!contiene(elemento))
++	    throw new NoSuchElementException ("No hay un elemento en la gráfica o ninguno");
++	Vertice eliminar = getVertice(elemento);
++	aristas -= eliminar.vecinos.getLongitud();
++	vertices.elimina(eliminar);
++	for(Vertice vecino:eliminar.vecinos)
++	    vecino.vecinos.elimina(eliminar);
+     }
+ 
+     /**
+@@ -239,6 +297,14 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public boolean sonVecinos(T a, T b) {
+         // Aquí va su código.
++	if(!contiene(a) || !contiene(b))
++            throw new NoSuchElementException ("No hay un elemento en la gráfica o ninguno");
++	Vertice ver = getVertice(a);
++	Vertice vecino = getVertice(b);
++	for(Vertice v : ver.vecinos)
++	    if(v.elemento.equals(vecino.elemento))
++		return true;
++	return false;
+     }
+ 
+     /**
+@@ -278,6 +344,10 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public VerticeGrafica<T> vertice(T elemento) {
+         // Aquí va su código.
++	Vertice ver = getVertice(elemento);
++	if(ver == null)
++	    throw new NoSuchElementException ("Ese elemento no está en la gráfica");
++	return ver;
+     }
+ 
+     /**
+@@ -288,6 +358,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void setColor(VerticeGrafica<T> vertice, Color color) {
+         // Aquí va su código.
++	v.color = color;
+     }
+ 
+     /**
+@@ -297,8 +368,37 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public boolean esConexa() {
+         // Aquí va su código.
++	pintaRojo();
++	Cola<Vertice> cola = new Cola<Vertice>();
++	Vertice ver = vertices.getPrimero();
++	ver.color = Color.NEGRO;
++	cola.mete(ver);
++	while(!cola.esVacia()){
++	    Vertice v = cola.saca();
++	    for(Vertice vecino : v.vecinos)
++		if(vecino.color == Color.ROJO){
++		    vecino.color = Color.NEGRO;
++		    cola.mete(vecino);
++		}
++	}
++	boolean conexa = negros();
++	despinta();
++	return conexa;
++    }
++    private boolean negros(){
++	for(Vertice v : vertices)
++	    if(v.color == Color.ROJO)
++		return false;
++	return true;
++    }
++    private void pintaRojo(){
++	for(Vertice v : vertices)
++	    v.color = Color.ROJO;
++    }
++    private void despinta(){
++	for(Vertice v :vertices)
++            v.color = Color.NINGUNO;
+     }
+-
+     /**
+      * Realiza la acción recibida en cada uno de los vértices de la gráfica, en
+      * el orden en que fueron agregados.
+@@ -306,6 +406,8 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void paraCadaVertice(AccionVerticeGrafica<T> accion) {
+         // Aquí va su código.
++	for(Vertice v : vertices)
++	    accion.actua(v);
+     }
+ 
+     /**
+@@ -320,6 +422,23 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void bfs(T elemento, AccionVerticeGrafica<T> accion) {
+         // Aquí va su código.
++	if(!contiene(elemento))
++	    throw new NoSuchElementException ("Ese elemento no está en la gráfica");
++	pintaRojo();
++	Vertice ver = getVertice(elemento);
++	ver.color = Color.NEGRO;
++	Cola<Vertice> cola = new Cola<Vertice>();
++	cola.mete(ver);
++	while(!cola.esVacia()){
++	    Vertice v = cola.saca();
++	    accion.actua(v);
++	    for(Vertice vecino: v.vecinos)
++		if(vecino.color == Color.ROJO){
++                    vecino.color = Color.NEGRO;
++                    cola.mete(vecino);
++		}
++	}
++	despinta();
+     }
+ 
+     /**
+@@ -334,6 +453,23 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     public void dfs(T elemento, AccionVerticeGrafica<T> accion) {
+         // Aquí va su código.
++	if(!contiene(elemento))
++            throw new NoSuchElementException ("Ese elemento no está en la gráfica");
++	pintaRojo();
++        Vertice ver = getVertice(elemento);
++        ver.color = Color.NEGRO;
++        Pila<Vertice> pila = new Pila<Vertice>();
++	pila.mete(ver);
++        while(!pila.esVacia()){
++            Vertice v = pila.saca();
++            accion.actua(v);
++            for(Vertice vecino: v.vecinos)
++                if(vecino.color == Color.ROJO){
++                    vecino.color = Color.NEGRO;
++                    pila.mete(vecino);
++                }
++        }
++	despinta();
+     }
+ 
+     /**
+@@ -343,6 +479,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public boolean esVacia() {
+         // Aquí va su código.
++	return vertices.esVacia();
+     }
+ 
+     /**
+@@ -350,6 +487,7 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public void limpia() {
+         // Aquí va su código.
++	vertices.limpia();
+     }
+ 
+     /**
+@@ -358,6 +496,21 @@ public class Grafica<T> implements Coleccion<T> {
+      */
+     @Override public String toString() {
+         // Aquí va su código.
++	String vertices = "{";
++	String aristas = "{";
++	for(Vertice v : this.vertices)
++	    vertices += v.elemento.toString()+", ";
++	vertices += "}";
++	pintaRojo();
++	for(Vertice ver : this.vertices){
++	    for(Vertice vecino : ver.vecinos)
++		if(vecino.color == Color.ROJO)
++		    aristas += "("+ver.elemento.toString()+", "+vecino.elemento.toString()+"), ";
++	    ver.color = Color.NEGRO;
++	}
++	aristas += "}";
++	return vertices + ", " + aristas;    
++	
+     }
+ 
+     /**
+@@ -371,6 +524,23 @@ public class Grafica<T> implements Coleccion<T> {
+             return false;
+         @SuppressWarnings("unchecked") Grafica<T> grafica = (Grafica<T>)objeto;
+         // Aquí va su código.
++	if(vertices.getElementos()!=grafica.vertices.getElementos())
++	    return false;
++	if(aristas!=grafica.getAristas())
++	    return false;
++	for(Vertice v : vertices){
++	    v.color = Color.ROJO;
++	    if(!grafica.contiene(v.elemento))
++		return false;
++	}
++	for(Vertice v : vertices)
++	    for(Vertice vecino :v.vecinos){
++		if(vecino.color == Color.ROJO)	
++		    if(!grafica.sonVecinos(v.elemento,vecino.elemento))
++			return false;
++		v.color = Color.NEGRO;
++	    }
++	return true;
+     }
+ 
+     /**

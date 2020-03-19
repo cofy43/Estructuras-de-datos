@@ -1,0 +1,32 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestDiccionario.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestDiccionario.java
+@@ -92,8 +92,10 @@ public class TestDiccionario {
+         String k = String.format("%x", ini);
+         String v = String.format("%x", ini+1);
+         diccionario.agrega(k, v);
++        if (diccionario.getElementos() != total*4) {
++        }
+         Assert.assertTrue(diccionario.getElementos() == total*4);
+-        Assert.assertTrue(diccionario.contiene(k));
++        Assert.assertTrue(diccionario.  contiene(k));
+         Assert.assertTrue(diccionario.get(k).equals(v));
+         Assert.assertTrue(diccionario.carga() < Diccionario.MAXIMA_CARGA);
+         try {
+@@ -106,7 +108,8 @@ public class TestDiccionario {
+         } catch (IllegalArgumentException iae) {}
+     }
+ 
+-    /**
++    /**cionario.agrega(s, s);
++            Assert.assertTrue(diccionario.getElementos() == i+
+      * Prueba unitaria para {@link Diccionario#get}.
+      */
+     @Test public void testGet() {
+@@ -312,6 +315,7 @@ public class TestDiccionario {
+      * Prueba unitaria para {@link Diccionario#equals}.
+      */
+     @Test public void testEquals() {
++        total = 10;
+         Diccionario<String, String> d2 = new Diccionario<String, String>();
+         Assert.assertTrue(diccionario.equals(d2));
+         Assert.assertTrue(diccionario.getElementos() == d2.getElementos());

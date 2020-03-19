@@ -1,0 +1,37 @@
+--- src/main/java/mx/unam/ciencias/edd/Lista.java
++++ src/main/java/mx/unam/ciencias/edd/Lista.java
+@@ -1,5 +1,6 @@
+ package mx.unam.ciencias.edd;
+ 
++import java.awt.List;
+ import java.util.Comparator;
+ import java.util.Iterator;
+ import java.util.NoSuchElementException;
+@@ -57,9 +58,9 @@ public class Lista<T> implements Coleccion<T> {
+         @Override public T next() {
+             // Aquí va su código.
+ 	    if(hasNext()){
+-		this.anterior=this.siguiente;
+-		this.siguiente=this.siguiente.siguiente;
+-		return this.anterior.elemento;
++		    this.anterior=this.siguiente;
++		    this.siguiente=this.siguiente.siguiente;
++		    return this.anterior.elemento;
+ 	    }else{
+ 		throw new NoSuchElementException("No hay nodo siguiente");
+ 	    }
+@@ -593,7 +594,7 @@ public class Lista<T> implements Coleccion<T> {
+      */
+     public static <T extends Comparable<T>>
+     Lista<T> mergeSort(Lista<T> lista) {
+-        return lista.mergeSort((a, b) -> a.compareTo(b));
++        return (lista.mergeSort((a, b) -> a.compareTo(b)));
+     }
+ 
+     /**
+@@ -622,4 +623,4 @@ public class Lista<T> implements Coleccion<T> {
+     boolean busquedaLineal(Lista<T> lista, T elemento) {
+         return lista.busquedaLineal(elemento, (a, b) -> a.compareTo(b));
+     }
+-}
++}

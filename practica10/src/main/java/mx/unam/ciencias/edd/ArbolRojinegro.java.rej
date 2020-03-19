@@ -1,0 +1,8 @@
+--- src/main/java/mx/unam/ciencias/edd/ArbolRojinegro.java
++++ src/main/java/mx/unam/ciencias/edd/ArbolRojinegro.java
+@@ -408,4 +408,4 @@ public class ArbolRojinegro<T extends Comparable<T>>
+                                                 "pueden girar a la derecha " +
+                                                 "por el usuario.");
+     }
+-}
++}

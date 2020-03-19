@@ -1,0 +1,18 @@
+--- src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
++++ src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
+@@ -42,8 +42,13 @@ public class ValorIndexable<T>
+      *         si es mayor.
+      */
+     @Override public int compareTo(ValorIndexable<T> valorIndexable) {
+-        // Aquí va su código.
+-	return (int) (this.valor - valorIndexable.valor); 
++	    if (this.valor < valorIndexable.valor)
++            return -1;
++
++        if (this.valor == valorIndexable.valor)
++            return 0;
++
++        return 1;
+     }
+ 
+     /**
