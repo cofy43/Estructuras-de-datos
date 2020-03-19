@@ -1,0 +1,82 @@
+--- src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
++++ src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
+@@ -20,6 +20,9 @@ public class ValorIndexable<T>
+      */
+     public ValorIndexable(T elemento, double valor) {
+         // Aquí va su código.
++	this.elemento = elemento;
++	this.valor = valor;
++	this.indice = -1;
+     }
+ 
+     /**
+@@ -28,6 +31,7 @@ public class ValorIndexable<T>
+      */
+     public T getElemento() {
+         // Aquí va su código.
++	return elemento;
+     }
+ 
+     /**
+@@ -38,7 +42,13 @@ public class ValorIndexable<T>
+      *         si es mayor.
+      */
+     @Override public int compareTo(ValorIndexable<T> valorIndexable) {
+-        // Aquí va su código.
++	    if (this.valor < valorIndexable.valor)
++            return -1;
++
++        if (this.valor == valorIndexable.valor)
++            return 0;
++
++        return 1;
+     }
+ 
+     /**
+@@ -47,6 +57,7 @@ public class ValorIndexable<T>
+      */
+     @Override public void setIndice(int indice) {
+         // Aquí va su código.
++	this.indice = indice;
+     }
+ 
+     /**
+@@ -55,6 +66,7 @@ public class ValorIndexable<T>
+      */
+     @Override public int getIndice() {
+         // Aquí va su código.
++	return indice;
+     }
+ 
+     /**
+@@ -63,6 +75,7 @@ public class ValorIndexable<T>
+      */
+     public void setValor(double valor) {
+         // Aquí va su código.
++	this.valor = valor;
+     }
+ 
+     /**
+@@ -71,6 +84,7 @@ public class ValorIndexable<T>
+      */
+     public double getValor() {
+         // Aquí va su código.
++	return valor;
+     }
+ 
+     /**
+@@ -85,6 +99,7 @@ public class ValorIndexable<T>
+         @SuppressWarnings("unchecked") ValorIndexable<T> valorIndexable =
+             (ValorIndexable<T>)objeto;
+         // Aquí va su código.
++	return (valor == valorIndexable.valor && indice == valorIndexable.indice && elemento.equals(valorIndexable.elemento));
+     }
+ 
+     /**
+@@ -93,5 +108,6 @@ public class ValorIndexable<T>
+      */
+     @Override public String toString() {
+         // Aquí va su código.
++	return String.format("%s:%2.9f", elemento.toString(), valor);
+     }
+ }

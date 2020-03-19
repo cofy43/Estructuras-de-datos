@@ -1,0 +1,34 @@
+--- src/main/java/mx/unam/ciencias/edd/Cola.java
++++ src/main/java/mx/unam/ciencias/edd/Cola.java
+@@ -11,6 +11,15 @@ public class Cola<T> extends MeteSaca<T> {
+      */
+     @Override public String toString() {
+         // Aquí va su código.
++	String cola="";
++	if(cabeza==null)
++	    return cola;
++	Nodo aux=cabeza;
++	while(aux!=null){
++	    cola+=(aux.elemento + ",");
++	    aux=aux.siguiente;
++	}
++	return cola;
+     }
+ 
+     /**
+@@ -21,5 +30,15 @@ public class Cola<T> extends MeteSaca<T> {
+      */
+     @Override public void mete(T elemento) {
+         // Aquí va su código.
++	if(elemento==null)
++	    throw new IllegalArgumentException("Debes dar un elemento");
++	Nodo nuevo = new Nodo(elemento);
++	if(cabeza==null)
++	    cabeza=rabo=nuevo;
++	else{
++	    rabo.siguiente=nuevo;
++	    rabo=nuevo;
++	}
++	    
+     }
+ }

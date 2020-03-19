@@ -1,0 +1,32 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestConjunto.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestConjunto.java
+@@ -90,10 +90,12 @@ public class TestConjunto {
+             conjunto.agrega(a[i]);
+         }
+         for (int i = 0; i < total; i++) {
++            System.out.println(conjunto.toString());
+             Assert.assertTrue(conjunto.contiene(a[i]));
+             conjunto.elimina(a[i]);
+             Assert.assertFalse(conjunto.contiene(a[i]));
+         }
++        System.out.println(conjunto.toString());
+         try {
+             conjunto.elimina(null);
+         } catch (IllegalArgumentException iae) {
+@@ -200,6 +202,7 @@ public class TestConjunto {
+      * Prueba unitaria para {@link Conjunto#toString}.
+      */
+     @Test public void testToString() {
++        total  =10;
+         int[] a = new int[total];
+         int ini = random.nextInt(total);
+         String s = "{ ";
+@@ -223,6 +226,8 @@ public class TestConjunto {
+         int ini = random.nextInt(total);
+         int[] a = new int[total];
+         Assert.assertFalse(conjunto == c2);
++        System.out.println(conjunto.toString());
++        System.out.println(c2.toString());
+         Assert.assertTrue(conjunto.equals(c2));
+         for (int i = 0; i < total; i++) {
+             a[i] = ini + i;

@@ -1,0 +1,136 @@
+--- src/main/java/mx/unam/ciencias/edd/ArbolAVL.java
++++ src/main/java/mx/unam/ciencias/edd/ArbolAVL.java
+@@ -23,6 +23,8 @@ public class ArbolAVL<T extends Comparable<T>>
+          */
+         public VerticeAVL(T elemento) {
+             // Aquí va su código.
++	    super(elemento);
++	    altura = 0;
+         }
+ 
+         /**
+@@ -31,6 +33,7 @@ public class ArbolAVL<T extends Comparable<T>>
+          */
+         @Override public int altura() {
+             // Aquí va su código.
++	    return super.altura();
+         }
+ 
+         /**
+@@ -39,6 +42,7 @@ public class ArbolAVL<T extends Comparable<T>>
+          */
+         @Override public String toString() {
+             // Aquí va su código.
++	    return elemento.toString() + " " + Integer.toString(altura) + "/" + Integer.toString(balance(this));
+         }
+ 
+         /**
+@@ -56,6 +60,7 @@ public class ArbolAVL<T extends Comparable<T>>
+                 return false;
+             @SuppressWarnings("unchecked") VerticeAVL vertice = (VerticeAVL)objeto;
+             // Aquí va su código.
++	    return (altura == vertice.altura && super.equals(objeto));
+         }
+     }
+ 
+@@ -86,6 +91,7 @@ public class ArbolAVL<T extends Comparable<T>>
+      */
+     @Override protected Vertice nuevoVertice(T elemento) {
+         // Aquí va su código.
++	return new VerticeAVL(elemento);
+     }
+ 
+     /**
+@@ -96,6 +102,9 @@ public class ArbolAVL<T extends Comparable<T>>
+      */
+     @Override public void agrega(T elemento) {
+         // Aquí va su código.
++	super.agrega(elemento);
++	VerticeAVL ver = verticeAVL(ultimoAgregado.padre);
++	balancea(ver);
+     }
+ 
+     /**
+@@ -105,8 +114,75 @@ public class ArbolAVL<T extends Comparable<T>>
+      */
+     @Override public void elimina(T elemento) {
+         // Aquí va su código.
++	Vertice eliminar = vertice(super.busca(elemento));
++	if(eliminar==null)
++	    return;
++	elementos--;
++	if(elementos==0){
++	    super.limpia();
++	    return;
++	}
++	VerticeAVL ver = verticeAVL(null);
++	if(eliminar.hayIzquierdo() && eliminar.hayDerecho()){
++            Vertice max = intercambiaEliminable(eliminar);
++	    ver = verticeAVL(max.padre);
++            eliminaVertice(max);
++        }else{
++	    ver =verticeAVL(eliminar.padre);
++            eliminaVertice(eliminar);
++        }
++	if(ver==null)
++	    return;
++	balancea(ver);
+     }
+-
++    private void balancea(VerticeAVL ver){
++	if(ver == null)
++	    return;
++	ver.altura = altura(ver);
++	if(balance(ver)==-2){
++	    VerticeAVL der = verticeAVL(ver.derecho);
++	    if(balance(der)==1){
++		super.giraDerecha(der);
++		der.altura = altura(der);
++		ver.altura = altura(ver);
++		der = verticeAVL(ver.derecho);
++	    }
++	    super.giraIzquierda(ver);
++	    der.altura = altura(der);
++	    ver.altura = altura(ver);
++	}	
++	if(balance(ver)==2){
++	    VerticeAVL iz = verticeAVL(ver.izquierdo);
++	    if(balance(iz)==-1){
++		super.giraIzquierda(iz);
++		iz.altura = altura(iz);
++		ver.altura = altura(ver);
++		iz = verticeAVL(ver.izquierdo);
++	    }
++	    super.giraDerecha(ver);
++	    iz.altura = altura(iz);
++	    ver.altura = altura(ver);
++	}
++	if(ver.padre==null)
++	    return;
++	balancea(verticeAVL(ver.padre));
++	
++    }
++    private int altura(VerticeAVL ver){
++	return ver.altura();
++    }
++    private int balance(VerticeAVL ver){
++	if(ver.izquierdo==null && ver.derecho==null)
++            return 0;
++        VerticeAVL derecho = verticeAVL(ver.derecho);
++	VerticeAVL izquierdo = verticeAVL(ver.izquierdo);
++	if(izquierdo==null)
++            return ((-1)-derecho.altura);
++	if(derecho==null)
++            return (izquierdo.altura+1);
++	return (izquierdo.altura-derecho.altura);
++    }
++	   
+     /**
+      * Lanza la excepción {@link UnsupportedOperationException}: los árboles AVL
+      * no pueden ser girados a la derecha por los usuarios de la clase, porque
+@@ -132,4 +208,4 @@ public class ArbolAVL<T extends Comparable<T>>
+                                                 "girar a la derecha por el " +
+                                                 "usuario.");
+     }
+-}
++}

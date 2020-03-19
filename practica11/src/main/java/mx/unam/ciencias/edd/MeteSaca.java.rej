@@ -1,0 +1,74 @@
+--- src/main/java/mx/unam/ciencias/edd/MeteSaca.java
++++ src/main/java/mx/unam/ciencias/edd/MeteSaca.java
+@@ -23,6 +23,7 @@ public abstract class MeteSaca<T> {
+          */
+         public Nodo(T elemento) {
+             // Aquí va su código.
++	    this.elemento=elemento;
+         }
+     }
+ 
+@@ -30,7 +31,6 @@ public abstract class MeteSaca<T> {
+     protected Nodo cabeza;
+     /** El rabo de la estructura. */
+     protected Nodo rabo;
+-
+     /**
+      * Agrega un elemento al extremo de la estructura.
+      * @param elemento el elemento a agregar.
+@@ -44,8 +44,17 @@ public abstract class MeteSaca<T> {
+      */
+     public T saca() {
+         // Aquí va su código.
++	if(cabeza==null)
++	    throw new NoSuchElementException("No hay elementos");
++	Nodo guarda=new Nodo(cabeza.elemento);
++	if(cabeza.siguiente==null){
++	    cabeza=rabo=null;
++	}else{
++	    cabeza=cabeza.siguiente;
++	    }
++	return guarda.elemento;
+     }
+-
++	
+     /**
+      * Nos permite ver el elemento en un extremo de la estructura, sin sacarlo
+      * de la misma.
+@@ -54,6 +63,9 @@ public abstract class MeteSaca<T> {
+      */
+     public T mira() {
+         // Aquí va su código.
++	if(cabeza==null)
++            throw new NoSuchElementException("No hay elementos");
++	return cabeza.elemento;
+     }
+ 
+     /**
+@@ -63,6 +75,7 @@ public abstract class MeteSaca<T> {
+      */
+     public boolean esVacia() {
+         // Aquí va su código.
++	return cabeza==null;
+     }
+ 
+     /**
+@@ -77,5 +90,18 @@ public abstract class MeteSaca<T> {
+             return false;
+         @SuppressWarnings("unchecked") MeteSaca<T> m = (MeteSaca<T>)object;
+         // Aquí va su código.
++	if((cabeza==null && m.cabeza!=null)||(cabeza!=null&& m.cabeza==null))
++	    return false;
++	Nodo aux=cabeza;
++	Nodo mn=m.cabeza;
++	while(aux!=null && mn!=null){
++	    if(!(aux.elemento.equals(mn.elemento)))
++		return false;
++	    if((aux.siguiente!=null && mn.siguiente==null) ||(aux.siguiente==null && mn.siguiente!=null))
++	       return false;
++	    aux=aux.siguiente;
++	    mn=mn.siguiente;
++	}
++	return true;
+     }
+ }

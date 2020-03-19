@@ -1,0 +1,326 @@
+--- src/main/java/mx/unam/ciencias/edd/MonticuloMinimo.java
++++ src/main/java/mx/unam/ciencias/edd/MonticuloMinimo.java
+@@ -13,16 +13,18 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+     private class Iterador implements Iterator<T> {
+ 
+         /* Índice del iterador. */
+-        private int indice;
++        private int indice = 0;
+ 
+         /* Nos dice si hay un siguiente elemento. */
+         @Override public boolean hasNext() {
+-            // Aquí va su código.
++            return (this.indice < elementos);
+         }
+ 
+         /* Regresa el siguiente elemento. */
+         @Override public T next() {
+-            // Aquí va su código.
++            if (indice >= elementos)
++                throw new NoSuchElementException();
++            return arbol[indice++];
+         }
+     }
+ 
+@@ -37,27 +39,28 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+ 
+         /* Crea un nuevo comparable indexable. */
+         public Adaptador(T elemento) {
+-            // Aquí va su código.
++            this.elemento = elemento;
++            this.indice = 0;
+         }
+ 
+         /* Regresa el índice. */
+         @Override public int getIndice() {
+-            // Aquí va su código.
++            return indice;
+         }
+ 
+         /* Define el índice. */
+         @Override public void setIndice(int indice) {
+-            // Aquí va su código.
++            this.indice = indice;
+         }
+ 
+         /* Compara un adaptador con otro. */
+         @Override public int compareTo(Adaptador<T> adaptador) {
+-            // Aquí va su código.
++            return (adaptador.elemento.compareTo(this.elemento));
+         }
+     }
+ 
+     /* El número de elementos en el arreglo. */
+-    private int elementos;
++    private int elementos = 0;
+     /* Usamos un truco para poder utilizar arreglos genéricos. */
+     private T[] arbol;
+ 
+@@ -99,7 +102,17 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @param n el número de elementos en el iterable.
+      */
+     public MonticuloMinimo(Iterable<T> iterable, int n) {
+-        // Aquí va su código.
++        elementos = n;
++        arbol = nuevoArreglo(elementos);
++        int i = 0;
++        for (T e : iterable) {
++            arbol[i] = e;
++            arbol[i].setIndice(i);
++            ++i;
++        }
++        for (int j = (elementos - 1) / 2; j >= 0; j--) {
++            acomodoHaciaAbajo(j);
++        }
+     }
+ 
+     /**
+@@ -107,7 +120,17 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @param elemento el elemento a agregar en el montículo.
+      */
+     @Override public void agrega(T elemento) {
+-        // Aquí va su código.
++        if (this.elementos == arbol.length) {
++            T [] temp = nuevoArreglo(arbol.length*2);
++            for (int i = 0; i < arbol.length; i++) {
++                temp[i] = arbol[i];
++            }
++            this.arbol = temp;
++        }
++
++        arbol[elementos] = elemento;
++        arbol[elementos].setIndice(elementos);
++        acomodoHaciaArriba(elementos++);
+     }
+ 
+     /**
+@@ -116,7 +139,85 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @throws IllegalStateException si el montículo es vacío.
+      */
+     @Override public T elimina() {
+-        // Aquí va su código.
++        if (elementos == 0)
++            throw new IllegalStateException();
++        
++        T aux = arbol[0];
++
++        intercambia(aux, arbol[--elementos]);
++
++        arbol[elementos].setIndice(-1);
++        arbol[elementos] = null;
++
++        acomodoHaciaAbajo(0);
++
++        return aux;
++    }
++
++    private void intercambia(T a, T b) {
++        int i_a = a.getIndice();
++        int i_b = b.getIndice();
++        arbol[i_a] = b;
++        arbol[i_b] = a;
++
++        arbol[i_a].setIndice(i_a);
++        arbol[i_b].setIndice(i_b);
++    }
++
++    private void acomodoHaciaArriba(int i) {
++        int padre = (i - 1) / 2;
++        int menor = i;
++
++        if (padre >= 0 && arbol[padre].compareTo(arbol[i]) > 0)
++            menor = padre;
++
++        if (menor != i) {
++            T aux = arbol[i];
++
++            arbol[i] = arbol[padre];
++            arbol[i].setIndice(i);
++
++            arbol[padre] = aux;
++            arbol[padre].setIndice(padre);
++
++            acomodoHaciaArriba(menor);
++        }
++    }
++
++    private void acomodoHaciaAbajo(int i) {
++        int izq = i * 2 + 1;
++        int der = i * 2 + 2;
++
++        if (izq >= elementos && der >= elementos) {
++            return;
++        }
++
++        int menor = getMenor(izq, der);
++        menor = getMenor(i, menor);
++
++        if (menor != i) {
++            T aux = arbol[i];
++
++            arbol[i] = arbol[menor];
++            arbol[i].setIndice(i);
++
++            arbol[menor] = aux;
++            arbol[menor].setIndice(menor);
++
++            acomodoHaciaAbajo(menor);
++        }
++
++    }
++
++    private int getMenor(int a, int b) {
++        if (b >= elementos) {
++            System.out.println(a);
++            return a;
++        } else if (arbol[a].compareTo(arbol[b]) < 0) {
++            return a;
++        }else {
++            return b;
++        }
+     }
+ 
+     /**
+@@ -124,7 +225,20 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @param elemento a eliminar del montículo.
+      */
+     @Override public void elimina(T elemento) {
+-        // Aquí va su código.
++        if (elemento.getIndice() < 0 || elemento.getIndice() >= this.elementos || elemento == null)
++            return;
++            
++        int i = elemento.getIndice();
++        T a = arbol[i], b = arbol[--elementos];
++        arbol[i] = b;
++        arbol[i].setIndice(a.getIndice());
++        arbol[elementos] = a;
++        arbol[elementos].setIndice(b.getIndice());
++
++        arbol[elementos].setIndice(-1);
++        arbol[elementos] = null;
++        reordena(arbol[i]);
++
+     }
+ 
+     /**
+@@ -134,7 +248,9 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      *         <code>false</code> en otro caso.
+      */
+     @Override public boolean contiene(T elemento) {
+-        // Aquí va su código.
++        if (elemento.getIndice() < 0 || elemento.getIndice() >= elementos) 
++            return false;
++        return true;
+     }
+ 
+     /**
+@@ -143,14 +259,17 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      *         <tt>false</tt> en otro caso.
+      */
+     @Override public boolean esVacia() {
+-        // Aquí va su código.
++        return (elementos == 0);
+     }
+ 
+     /**
+      * Limpia el montículo de elementos, dejándolo vacío.
+      */
+     @Override public void limpia() {
+-        // Aquí va su código.
++        elementos = 0;
++        for (int i = 0; i < elementos; i++) {
++            arbol[i] = null;
++        }
+     }
+ 
+    /**
+@@ -158,7 +277,12 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @param elemento el elemento que hay que reordenar.
+      */
+     @Override public void reordena(T elemento) {
+-        // Aquí va su código.
++        if (elemento == null) {
++            return;
++        }
++        int i = elemento.getIndice();
++        acomodoHaciaArriba(i);
++        acomodoHaciaAbajo(i);
+     }
+ 
+     /**
+@@ -166,7 +290,7 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @return el número de elementos en el montículo mínimo.
+      */
+     @Override public int getElementos() {
+-        // Aquí va su código.
++        return elementos;
+     }
+ 
+     /**
+@@ -177,7 +301,9 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      *         que el número de elementos.
+      */
+     @Override public T get(int i) {
+-        // Aquí va su código.
++        if (i < 0 || i >= elementos)
++            throw new NoSuchElementException();
++        return arbol[i];
+     }
+ 
+     /**
+@@ -185,7 +311,12 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      * @return una representación en cadena del montículo mínimo.
+      */
+     @Override public String toString() {
+-        // Aquí va su código.
++        String s = "";
++
++        for (int i = 0; i < getElementos(); i++) {
++            s += String.valueOf(get(i).toString()) + ", ";
++        }
++        return s;
+     }
+ 
+     /**
+@@ -199,7 +330,13 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+             return false;
+         @SuppressWarnings("unchecked") MonticuloMinimo<T> monticulo =
+             (MonticuloMinimo<T>)objeto;
+-        // Aquí va su código.
++        if (this.elementos != monticulo.elementos)
++            return false;
++        for (int i = 0; i < getElementos(); i++) {
++            if (arbol[i].compareTo(monticulo.get(i)) != 0)
++                return false;
++        }
++        return true;
+     }
+ 
+     /**
+@@ -219,6 +356,25 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
+      */
+     public static <T extends Comparable<T>>
+     Lista<T> heapSort(Coleccion<T> coleccion) {
+-        // Aquí va su código.
++        Lista<Adaptador<T>> l1 = new Lista<>();
++
++        for (T t: coleccion) {
++            l1.agrega(new Adaptador<T>(t));
++        }
++
++        Lista<T> l2 = new Lista<>();
++
++        MonticuloMinimo<Adaptador<T>> monticulo = new MonticuloMinimo<>(l1);
++
++        int i = 0;
++        while (!monticulo.esVacia()) {
++            Adaptador<T> aux = monticulo.get(i);
++            monticulo.elimina();
++            l2.agrega(aux.elemento);
++        }
++
++        //Esto esta muy puerco
++        return l2.reversa();
++        
+     }
+ }

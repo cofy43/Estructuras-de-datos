@@ -1,0 +1,74 @@
+--- src/main/java/mx/unam/ciencias/edd/MonticuloArreglo.java
++++ src/main/java/mx/unam/ciencias/edd/MonticuloArreglo.java
+@@ -38,6 +38,14 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      */
+     public MonticuloArreglo(Iterable<T> iterable, int n) {
+         // Aquí va su código.
++	int i = 0;
++	arreglo = nuevoArreglo(n);
++	for(T elemento : iterable){
++	    arreglo[i] = elemento;
++	    elemento.setIndice(i);
++	    i++;
++	}
++	elementos = n;
+     }
+ 
+     /**
+@@ -47,8 +55,31 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      */
+     @Override public T elimina() {
+         // Aquí va su código.
++	if(esVacia())
++	    throw new IllegalStateException();
++	T minimo = getMinimo();
++	int min = minimo.getIndice();
++	arreglo[min] = null;
++	minimo.setIndice(-1);
++	elementos--;
++	return minimo;
+     }
+ 
++    private T getMinimo(){
++	int minimo = 0;
++	for(int i = 0; i<arreglo.length; i++)
++	    if(arreglo[i]!=null){
++		minimo = i;
++		break;
++	    }
++	for(int j = 0;j<arreglo.length;j++){
++	    if(arreglo[j]==null)
++		continue;
++	    if(arreglo[minimo].compareTo(arreglo[j])>0)
++		minimo = j;
++	}
++	return arreglo[minimo];
++    }
+     /**
+      * Regresa el <i>i</i>-ésimo elemento del arreglo.
+      * @param i el índice del elemento que queremos.
+@@ -58,6 +89,9 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      */
+     @Override public T get(int i) {
+         // Aquí va su código.
++	if(i<0 || i>=elementos)
++	    throw new NoSuchElementException();
++	return arreglo[i];
+     }
+ 
+     /**
+@@ -67,6 +101,7 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      */
+     @Override public boolean esVacia() {
+         // Aquí va su código.
++	return elementos == 0;
+     }
+ 
+     /**
+@@ -75,5 +110,6 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      */
+     @Override public int getElementos() {
+         // Aquí va su código.
++	return elementos;
+     }
+ }
