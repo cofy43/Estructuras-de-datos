@@ -30,11 +30,4 @@ public class Proyecto1 {
                 System.out.println("Sobre escribe el archivo");
         }
     }
-
-    /* public static void main(String[] args) {
-        if (args.length == 0)
-            uso();
-
-        bandera(args);
-    } */
 }
