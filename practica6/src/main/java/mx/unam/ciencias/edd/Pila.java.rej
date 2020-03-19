@@ -1,0 +1,35 @@
+--- src/main/java/mx/unam/ciencias/edd/Pila.java
++++ src/main/java/mx/unam/ciencias/edd/Pila.java
+@@ -10,7 +10,15 @@ public class Pila<T> extends MeteSaca<T> {
+      * @return una representación en cadena de la pila.
+      */
+     @Override public String toString() {
+-        // Aquí va su código.
++        if (esVacia())
++            return "";
++        Nodo n = cabeza;
++        String representación = "";
++        while (n != null) {
++            representación += String.valueOf(n.elemento) + "\n";
++            n = n.siguiente;   
++        }
++        return representación;
+     }
+ 
+     /**
+@@ -20,6 +28,14 @@ public class Pila<T> extends MeteSaca<T> {
+      *         <code>null</code>.
+      */
+     @Override public void mete(T elemento) {
+-        // Aquí va su código.
++        if (elemento == null)
++            throw new IllegalArgumentException();
++        Nodo n = new Nodo(elemento);
++        if (esVacia()) {
++            cabeza = rabo = n;
++        }else {
++            n.siguiente = cabeza;
++        cabeza = n;
++        }
+     }
+ }

@@ -1,0 +1,77 @@
+--- src/main/java/mx/unam/ciencias/edd/MeteSaca.java
++++ src/main/java/mx/unam/ciencias/edd/MeteSaca.java
+@@ -22,7 +22,7 @@ public abstract class MeteSaca<T> {
+          * @param elemento el elemento del nodo.
+          */
+         public Nodo(T elemento) {
+-            // Aquí va su código.
++            this.elemento = elemento;
+         }
+     }
+ 
+@@ -43,9 +43,19 @@ public abstract class MeteSaca<T> {
+      * @throws NoSuchElementException si la estructura está vacía.
+      */
+     public T saca() {
+-        // Aquí va su código.
++        if (esVacia()) 
++            throw new NoSuchElementException();
++        T aux = cabeza.elemento;
++        if (cabeza.siguiente == null) {
++            cabeza = null;
++            return aux;
++        } else {
++            cabeza = cabeza.siguiente;
++            return aux;
++        }
+     }
+ 
++
+     /**
+      * Nos permite ver el elemento en un extremo de la estructura, sin sacarlo
+      * de la misma.
+@@ -53,7 +63,11 @@ public abstract class MeteSaca<T> {
+      * @throws NoSuchElementException si la estructura está vacía.
+      */
+     public T mira() {
+-        // Aquí va su código.
++        if (esVacia()) {
++            throw new NoSuchElementException();
++        }else {
++            return cabeza.elemento;
++        }
+     }
+ 
+     /**
+@@ -62,7 +76,7 @@ public abstract class MeteSaca<T> {
+      *         <tt>false</tt> en otro caso.
+      */
+     public boolean esVacia() {
+-        // Aquí va su código.
++        return (cabeza == null);
+     }
+ 
+     /**
+@@ -76,6 +90,21 @@ public abstract class MeteSaca<T> {
+         if (object == null || getClass() != object.getClass())
+             return false;
+         @SuppressWarnings("unchecked") MeteSaca<T> m = (MeteSaca<T>)object;
+-        // Aquí va su código.
++        Nodo aux = cabeza;
++        Nodo comparar = m.cabeza;
++        while (comparar != null) {
++            if (!aux.elemento.equals(comparar.elemento)) {
++                return false;
++            }else {
++                comparar = comparar.siguiente;
++                aux = aux.siguiente;
++            }
++        }
++        if (aux != null) {
++            return false;
++        }else {
++            return true;
++        }
++
+     }
+ }
