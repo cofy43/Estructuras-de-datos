@@ -1,0 +1,11 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestMonticuloArreglo.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestMonticuloArreglo.java
+@@ -84,7 +84,7 @@ public class TestMonticuloArreglo {
+ 
+     /**
+      * Prueba unitaria para {@link MonticuloArreglo#elimina}.
+-     */
++     */ 
+     @Test public void testElimina() {
+         Lista<ValorIndexable<String>> ordenada =
+             new Lista<ValorIndexable<String>>();

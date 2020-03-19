@@ -1,0 +1,92 @@
+--- src/main/java/mx/unam/ciencias/edd/MonticuloArreglo.java
++++ src/main/java/mx/unam/ciencias/edd/MonticuloArreglo.java
+@@ -37,7 +37,14 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      * @param n el número de elementos en el iterable.
+      */
+     public MonticuloArreglo(Iterable<T> iterable, int n) {
+-        // Aquí va su código.
++        arreglo = nuevoArreglo(n);
++        int i = 0;
++        for (T t: iterable) {
++            arreglo[i] = t;
++            arreglo[i].setIndice(i);
++            i++;
++        }
++        elementos = arreglo.length;
+     }
+ 
+     /**
+@@ -46,7 +53,43 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      * @throws IllegalStateException si el montículo es vacío.
+      */
+     @Override public T elimina() {
+-        // Aquí va su código.
++        if (elementos == 0)
++            throw new IllegalStateException();
++        
++        T minimo = null;
++        if (arreglo[0] != null && arreglo[0].getIndice() != -1) {
++            minimo = arreglo[0];
++        } else {
++            for (int j = 0; j < arreglo.length; j++) {
++                if (arreglo[j] != null) {
++                    minimo = arreglo[j];
++                    break;
++                }
++             }
++        }
++        
++        int indice = minimo.getIndice();
++        for (int i = 0; i < arreglo.length; i++) {
++            if (i == 0)
++                continue;
++
++            if (arreglo[i] != null) {
++                if (minimo.compareTo(arreglo[i]) > 0) {
++                    minimo  = arreglo[i];
++                    indice = arreglo[i].getIndice();
++                }
++            }
++
++        }
++        String s = "";
++        for (int k = 0; k < arreglo.length; k++)
++            s+= arreglo[k] + ", ";
++
++        arreglo[indice].setIndice(-1);
++        arreglo[indice] = null;
++        elementos --;
++
++        return minimo;
+     }
+ 
+     /**
+@@ -57,7 +100,10 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      *         que el número de elementos.
+      */
+     @Override public T get(int i) {
+-        // Aquí va su código.
++        if (i < 0 || i >= elementos)
++            throw new NoSuchElementException();
++        
++        return arreglo[i];
+     }
+ 
+     /**
+@@ -66,7 +112,7 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      *         <tt>false</tt> en otro caso.
+      */
+     @Override public boolean esVacia() {
+-        // Aquí va su código.
++        return (elementos == 0);
+     }
+ 
+     /**
+@@ -74,6 +120,6 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
+      * @return el número de elementos en el montículo.
+      */
+     @Override public int getElementos() {
+-        // Aquí va su código.
++        return elementos;
+     }
+ }

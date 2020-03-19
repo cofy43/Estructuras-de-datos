@@ -1,0 +1,31 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestArbolBinarioOrdenado.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestArbolBinarioOrdenado.java
+@@ -140,10 +140,11 @@ public class TestArbolBinarioOrdenado {
+     /**
+      * Prueba unitaria para {@link ArbolBinarioOrdenado#elimina}.
+      */
+-    @Test public void testElimina() {
++    @ Test public void testElimina() {
+         int[] a = arregloSinRepetidos();
+-        for (int n : a)
++        for (int n : a) {
+             arbol.agrega(n);
++        }
+         int n = total;
+         while (arbol.getElementos() > 0) {
+             Assert.assertTrue(arbol.getElementos() == n);
+@@ -160,12 +161,13 @@ public class TestArbolBinarioOrdenado {
+             Assert.assertTrue(arbol.getElementos() == --n);
+             arbolBinarioOrdenadoValido(arbol);
+             a[i] = -1;
++
+         }
+     }
+ 
+     /**
+      * Prueba unitaria para {@link ArbolBinario#altura}.
+-     */
++     */ 
+     @Test public void testAltura() {
+         Assert.assertTrue(arbol.altura() == -1);
+         for (int i = 0; i < total; i++) {

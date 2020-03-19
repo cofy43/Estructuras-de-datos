@@ -1,0 +1,13 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestMonticuloMinimo.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestMonticuloMinimo.java
+@@ -296,8 +296,9 @@ public class TestMonticuloMinimo {
+             monticulo.agrega(idx);
+         }
+         int i = 0;
+-        for (ValorIndexable<String> idx : monticulo)
++        for (ValorIndexable<String> idx : monticulo) {
+             Assert.assertTrue(idx.getValor() == i++);
++        }
+     }
+ 
+     /**

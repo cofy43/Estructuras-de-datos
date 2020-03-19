@@ -1,0 +1,18 @@
+--- src/test/java/mx/unam/ciencias/edd/test/TestGrafica.java
++++ src/test/java/mx/unam/ciencias/edd/test/TestGrafica.java
+@@ -169,6 +169,7 @@ public class TestGrafica {
+         int vertices = total;
+         int aristas = (total * (total - 1)) / 2;
+         int[] grado = { vertices - 1 };
++        
+         for (int i = 0; i < total; i++) {
+             grafica.paraCadaVertice(v -> Assert.assertTrue(v.getGrado() ==
+                                                            grado[0]));
+@@ -431,6 +432,7 @@ public class TestGrafica {
+      * Prueba unitaria para {@link Grafica#equals}.
+      */
+     @Test public void testEquals() {
++        total = 4;
+         for (int i = 0; i < total; i++)
+             grafica.agrega(i);
+         for (int i = 0; i < total; i++)

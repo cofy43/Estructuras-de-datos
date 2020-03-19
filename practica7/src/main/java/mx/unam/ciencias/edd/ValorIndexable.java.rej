@@ -1,0 +1,100 @@
+--- src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
++++ src/main/java/mx/unam/ciencias/edd/ValorIndexable.java
+@@ -19,7 +19,9 @@ public class ValorIndexable<T>
+      * @param valor su valor.
+      */
+     public ValorIndexable(T elemento, double valor) {
+-        // Aquí va su código.
++        this.elemento = elemento;
++        this.valor = valor;
++        this.indice = -1;
+     }
+ 
+     /**
+@@ -27,7 +29,7 @@ public class ValorIndexable<T>
+      * @return el elemento del valor indexable.
+      */
+     public T getElemento() {
+-        // Aquí va su código.
++        return this.elemento;
+     }
+ 
+     /**
+@@ -38,7 +40,13 @@ public class ValorIndexable<T>
+      *         si es mayor.
+      */
+     @Override public int compareTo(ValorIndexable<T> valorIndexable) {
+-        // Aquí va su código.
++        if (this.valor < valorIndexable.valor)
++            return -1;
++
++        if (this.valor == valorIndexable.valor)
++            return 0;
++
++        return 1;
+     }
+ 
+     /**
+@@ -46,7 +54,7 @@ public class ValorIndexable<T>
+      * @param indice el nuevo índice.
+      */
+     @Override public void setIndice(int indice) {
+-        // Aquí va su código.
++        this.indice = indice;
+     }
+ 
+     /**
+@@ -54,7 +62,7 @@ public class ValorIndexable<T>
+      * @return el índice del valor indexable.
+      */
+     @Override public int getIndice() {
+-        // Aquí va su código.
++        return this.indice;
+     }
+ 
+     /**
+@@ -62,7 +70,7 @@ public class ValorIndexable<T>
+      * @param valor el nuevo valor.
+      */
+     public void setValor(double valor) {
+-        // Aquí va su código.
++        this.valor =  valor;
+     }
+ 
+     /**
+@@ -70,7 +78,7 @@ public class ValorIndexable<T>
+      * @return el valor del valor indexable.
+      */
+     public double getValor() {
+-        // Aquí va su código.
++        return this.valor;
+     }
+ 
+     /**
+@@ -84,7 +92,11 @@ public class ValorIndexable<T>
+             return false;
+         @SuppressWarnings("unchecked") ValorIndexable<T> valorIndexable =
+             (ValorIndexable<T>)objeto;
+-        // Aquí va su código.
++            
++        if (valorIndexable.valor == this.valor)
++            return true;
++
++        return false;
+     }
+ 
+     /**
+@@ -92,6 +104,12 @@ public class ValorIndexable<T>
+      * @return una representación en cadena del valor indexable.
+      */
+     @Override public String toString() {
+-        // Aquí va su código.
++        if (elemento == null)
++            return "";
++        
++        String s = "";
++
++        s += String.valueOf(elemento) + ":" + String.format("%2.9f", valor);
++        return s;
+     }
+ }
